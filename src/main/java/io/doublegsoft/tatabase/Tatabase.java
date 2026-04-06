@@ -116,7 +116,11 @@ public class Tatabase {
   }
   
   public String string(Number length) {
-    return NamedEntity.STRING.get(1, length).get(0);
+    String retVal = NamedEntity.STRING.get(1, length).get(0);
+    if (retVal.length() > length.intValue()) {
+      retVal = retVal.substring(0, length.intValue());
+    }
+    return retVal;
   }
   
   public String number(Number min, Number max) {
