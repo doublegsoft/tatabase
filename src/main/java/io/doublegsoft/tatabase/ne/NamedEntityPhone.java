@@ -1,0 +1,44 @@
+/*
+ * DOUBLEGSOFT.IO CONFIDENTIAL
+ *
+ * Copyright (C) doublegsoft.io
+ *
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of doublegsoft.com and its suppliers, if any.
+ * The intellectual and technical concepts contained herein
+ * are proprietary to doublegsoft.com and its suppliers  and
+ * may be covered by China and Foreign Patents, patents in
+ * process, and are protected by trade secret or copyright law.
+ *
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from doublegsoft.com.
+ */
+package io.doublegsoft.tatabase.ne;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * It is the domain phone number implementing the {@link DomainResource} interface.
+ *
+ * @author <a href="mailto:guo.guo.gan@gmail.com">Christian Gann</a>
+ *
+ * @since 1.0
+ */
+public class NamedEntityPhone extends NamedEntity {
+
+  public List<String> get(int count) {
+    List<String> retVal = new ArrayList<>();
+    Random rand = new Random();
+    for (int i = 0; i < count; i++) {
+      int num = rand.ints(10000000, 99999999).findFirst().getAsInt();
+      retVal.add(String.format("%08d", num));
+    }
+    return retVal;
+  }
+
+}
