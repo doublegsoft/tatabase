@@ -25,6 +25,7 @@ import com.doublegsoft.jcommons.metabean.ModelDefinition;
 import com.doublegsoft.jcommons.metabean.ObjectDefinition;
 import com.doublegsoft.jcommons.metabean.type.CustomType;
 import com.doublegsoft.jcommons.metabean.type.PrimitiveType;
+import io.doublegsoft.typebase.EnumValue;
 import io.doublegsoft.typebase.Typebase;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,9 +142,9 @@ public class TatabaseContext {
       return attr.getConstraint().getDefaultValue();
     }
     if (attr.getConstraint().getDomainType().getExpression().indexOf("enum") == 0) {
-      List<StringPair> pairs = TYPEBASE.enumtype(attr.getConstraint().getDomainType().getExpression());
-      StringPair pair = pairs.get(randomInt(0, pairs.size() - 1));
-      return pair.getKey();
+      List<EnumValue> pairs = TYPEBASE.enumtype(attr.getConstraint().getDomainType().getExpression());
+      EnumValue pair = pairs.get(randomInt(0, pairs.size() - 1));
+      return pair.getCode();
     }
     if (PrimitiveType.INTEGER.equals(attr.getType().getName())) {
       return randomInt(1, 100);

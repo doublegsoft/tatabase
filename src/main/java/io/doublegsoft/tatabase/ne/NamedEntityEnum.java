@@ -19,6 +19,7 @@
 package io.doublegsoft.tatabase.ne;
 
 import com.doublegsoft.jcommons.lang.StringPair;
+import io.doublegsoft.typebase.EnumValue;
 import io.doublegsoft.typebase.Typebase;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +37,11 @@ public class NamedEntityEnum {
   
   public List<String> get(int count, String expr) {
     List<String> retVal = new ArrayList<>();
-    List<StringPair> pairs = TYPEBASE.enumtype(expr);
+    List<EnumValue> pairs = TYPEBASE.enumtype(expr);
     Random rand = new Random();
     for (int i = 0; i < count; i++) {
-      StringPair pair = pairs.get(rand.nextInt(pairs.size()));
-      retVal.add(pair.getKey());
+      EnumValue pair = pairs.get(rand.nextInt(pairs.size()));
+      retVal.add(pair.getCode());
     }
     return retVal;
   }

@@ -137,12 +137,12 @@
     <dependency>
       <groupId>com.doublegsoft.jcommons</groupId>
       <artifactId>jcommons-metabean</artifactId>
-      <version>5.0</version>
+      <version>7.0</version>
     </dependency>
     <dependency>
       <groupId>io.doublegsoft.typebase</groupId>
       <artifactId>typebase</artifactId>
-      <version>4.0</version>
+      <version>7.0</version>
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
