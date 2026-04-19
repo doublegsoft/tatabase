@@ -18,9 +18,9 @@
  */
 package io.doublegsoft.tatabase.ne;
 
+import com.doublegsoft.jcommons.utils.Dates;
 import io.doublegsoft.tatabase.ne.DomainDateSequence;
 import java.util.Calendar;
-import net.doublegsoft.appbase.util.Dates;
 import org.junit.Test;
 
 /**

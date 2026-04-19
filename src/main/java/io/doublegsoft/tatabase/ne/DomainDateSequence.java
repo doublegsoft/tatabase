@@ -18,10 +18,11 @@
  */
 package io.doublegsoft.tatabase.ne;
 
+import com.doublegsoft.jcommons.utils.Dates;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import net.doublegsoft.appbase.util.Dates;
 
 /**
  * It is the domain date sequence implementing the {@link DomainResource} interface.

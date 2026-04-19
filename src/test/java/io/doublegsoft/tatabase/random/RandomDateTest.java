@@ -18,8 +18,7 @@
  */
 package io.doublegsoft.tatabase.random;
 
-import io.doublegsoft.tatabase.random.RandomDate;
-import net.doublegsoft.appbase.util.Dates;
+import com.doublegsoft.jcommons.utils.Dates;
 import org.junit.Test;
 
 /**

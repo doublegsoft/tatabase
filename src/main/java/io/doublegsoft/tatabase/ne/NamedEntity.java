@@ -18,6 +18,8 @@
  */
 package io.doublegsoft.tatabase.ne;
 
+import com.doublegsoft.jcommons.utils.Safe;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-import net.doublegsoft.appbase.util.Safe;
 
 /**
  *

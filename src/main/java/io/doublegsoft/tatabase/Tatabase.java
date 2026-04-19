@@ -19,6 +19,7 @@
 package io.doublegsoft.tatabase;
 
 import com.doublegsoft.jcommons.metabean.type.DomainType;
+import com.doublegsoft.jcommons.utils.Strings;
 import io.doublegsoft.tatabase.ne.NamedEntityMobile;
 import io.doublegsoft.tatabase.ne.DomainObject;
 import io.doublegsoft.tatabase.ne.NamedEntity;
@@ -38,9 +39,6 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.Map.Entry;
-
-import net.doublegsoft.appbase.ObjectMap;
-import net.doublegsoft.appbase.util.Strings;
 
 /**
  * {@link Tatabase} is an api for the test data.
@@ -233,15 +231,16 @@ public class Tatabase {
       outfile.getParentFile().mkdirs();
     }
     outfile.createNewFile();
-    
-    String tpl = new String(Files.readAllBytes(new File(tplpath).toPath()), "UTF-8");
-    ObjectMap data = new ObjectMap();
-    data.set("tatabase", this);
-    data.set("customObject", customObject);
-    String content = Strings.templatize(tpl, data);
-    OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(outfile), "UTF-8");
-    fw.write(content);
-    fw.close();
+
+    // TODO: 需要重新实现
+//    String tpl = new String(Files.readAllBytes(new File(tplpath).toPath()), "UTF-8");
+//    ObjectMap data = new ObjectMap();
+//    data.set("tatabase", this);
+//    data.set("customObject", customObject);
+//    String content = Strings.templatize(tpl, data);
+//    OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(outfile), "UTF-8");
+//    fw.write(content);
+//    fw.close();
     return "";
   }
   

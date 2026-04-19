@@ -18,11 +18,12 @@
  */
 package io.doublegsoft.tatabase.random;
 
+import com.doublegsoft.jcommons.utils.Dates;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import net.doublegsoft.appbase.util.Dates;
 
 /**
  * It is the random date implementing the {@link RandomResource} interface.

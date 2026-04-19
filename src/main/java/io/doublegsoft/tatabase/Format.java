@@ -20,10 +20,11 @@ package io.doublegsoft.tatabase;
 
 import com.doublegsoft.jcommons.lang.HashObject;
 import com.doublegsoft.jcommons.lang.StringHolder;
+import com.doublegsoft.jcommons.utils.Dates;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import net.doublegsoft.appbase.util.Dates;
 
 /**
  * It is the output format under tatabase.
