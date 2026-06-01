@@ -18,15 +18,10 @@
  */
 package io.doublegsoft.tatabase;
 
+import com.doublegsoft.jcommons.metabean.ModelDefinition;
 import com.doublegsoft.jcommons.metabean.type.DomainType;
 import com.doublegsoft.jcommons.utils.Strings;
-import io.doublegsoft.tatabase.ne.NamedEntityMobile;
-import io.doublegsoft.tatabase.ne.DomainObject;
-import io.doublegsoft.tatabase.ne.NamedEntity;
-import io.doublegsoft.tatabase.ne.NamedEntityDate;
-import io.doublegsoft.tatabase.ne.NamedEntityMail;
-import io.doublegsoft.tatabase.ne.NamedEntityPhone;
-import io.doublegsoft.tatabase.ne.NamedEntitySequence;
+import io.doublegsoft.tatabase.ne.*;
 import io.doublegsoft.tatabase.random.RandomNumber;
 import io.doublegsoft.tatabase.random.RandomUUID;
 import io.doublegsoft.typebase.CustomObject;
@@ -164,6 +159,10 @@ public class Tatabase {
     return strs.get(rand.nextInt(strs.size()));
   }
 
+  public String value(String dataDir, String attrname) throws IOException {
+    return new NamedEntityAnything().get(dataDir, attrname);
+  }
+
   @Deprecated
   public String value(String domain, String prefix, String langtype) {
     String dmn = domain == null ? "" : domain.toLowerCase();
@@ -207,44 +206,6 @@ public class Tatabase {
   }
   
   /**
-   * Makes test data file under root directory.
-   * 
-   * @param root
-   *        the output root directory
-   * 
-   * @param path
-   *        the output file path including directory and file name
-   * 
-   * @param tplpath
-   *        the template file path
-   * 
-   * @param customObject
-   *        the custom object which is applied to page type definition 
-   *        and it is a specific collection widget type such as table, 
-   *        tree, list etc.
-   * 
-   * @since 4.5
-   */
-  public String touch(String root, String path, String tplpath, CustomObject customObject) throws IOException {
-    File outfile = new File(root + "/" + path);
-    if (!outfile.getParentFile().exists()) {
-      outfile.getParentFile().mkdirs();
-    }
-    outfile.createNewFile();
-
-    // TODO: 需要重新实现
-//    String tpl = new String(Files.readAllBytes(new File(tplpath).toPath()), "UTF-8");
-//    ObjectMap data = new ObjectMap();
-//    data.set("tatabase", this);
-//    data.set("customObject", customObject);
-//    String content = Strings.templatize(tpl, data);
-//    OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(outfile), "UTF-8");
-//    fw.write(content);
-//    fw.close();
-    return "";
-  }
-  
-  /**
    * Gets a string value randomly.
    * 
    * @param domain
@@ -263,5 +224,6 @@ public class Tatabase {
     }
     return retVal.get(0);
   }
+
 
 }

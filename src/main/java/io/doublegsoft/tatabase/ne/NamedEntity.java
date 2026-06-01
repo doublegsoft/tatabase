@@ -130,15 +130,10 @@ public class NamedEntity {
   
   protected List<String> get(int count, String namedEntity) {
     List<String> retVal = new ArrayList<>();
-    Map<String,Integer> map = new HashMap<>();
     for (int i = 0; i < count; ++i) {
       String s = random(namedEntity);
-//      if (!map.containsKey(s))
-//        map.put(s, 0);
-//      map.put(s, map.get(s) + 1);
       retVal.add(s);
     }
-//    retVal.addAll(map.keySet());
     return retVal;
   } 
   
