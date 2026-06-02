@@ -19,6 +19,12 @@
 package io.doublegsoft.tatabase;
 
 import java.util.Map;
+
+import com.doublegsoft.jcommons.metabean.AttributeDefinition;
+import com.doublegsoft.jcommons.metabean.ModelDefinition;
+import com.doublegsoft.jcommons.metabean.ObjectDefinition;
+import com.doublegsoft.jcommons.metabean.type.DomainType;
+import com.doublegsoft.jcommons.metabean.type.PrimitiveType;
 import org.junit.Test;
 
 /**
@@ -52,10 +58,31 @@ public class TatabaseTest {
   }
 
   @Test
-  public void value() {
-    Tatabase tb = new Tatabase();
-
-    System.out.println(tb.value("merchandise"));
+  public void value() throws Exception {
+    ModelDefinition model = new ModelDefinition();
+    ObjectDefinition obj = new ObjectDefinition("dummy", model);
+    Tatabase tb = new Tatabase("./model");
+    AttributeDefinition attr = new AttributeDefinition("a", obj);
+    attr.setType(new PrimitiveType("int"));
+    System.out.println(tb.value(attr));
+    attr = new AttributeDefinition("b", obj);
+    attr.setType(new PrimitiveType("number"));
+    System.out.println(tb.value(attr));
+    attr = new AttributeDefinition("c", obj);
+    attr.setType(new PrimitiveType("now"));
+    System.out.println(tb.value(attr));
+    attr = new AttributeDefinition("d", obj);
+    attr.setType(new PrimitiveType("string"));
+    attr.getConstraint().setMaxSize(20);
+    System.out.println(tb.value(attr));
+    attr = new AttributeDefinition("e", obj);
+    attr.setType(new PrimitiveType("string"));
+    attr.getConstraint().setDomainType(new DomainType("enum[01:ABC('大A'),BB:BCD('大B'),CC:C('大C')]"));
+    System.out.println(tb.value(attr));
+    attr = new AttributeDefinition("f", obj);
+    attr.setType(new PrimitiveType("long"));
+    attr.getConstraint().setIdentifiable(true);
+    System.out.println(tb.value(attr));
   }
   
 }

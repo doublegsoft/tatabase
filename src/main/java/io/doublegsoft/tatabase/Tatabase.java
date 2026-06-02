@@ -18,22 +18,21 @@
  */
 package io.doublegsoft.tatabase;
 
-import com.doublegsoft.jcommons.metabean.ModelDefinition;
+import com.doublegsoft.jcommons.metabean.AttributeDefinition;
 import com.doublegsoft.jcommons.metabean.type.DomainType;
 import com.doublegsoft.jcommons.utils.Strings;
 import io.doublegsoft.tatabase.ne.*;
 import io.doublegsoft.tatabase.random.RandomNumber;
 import io.doublegsoft.tatabase.random.RandomUUID;
-import io.doublegsoft.typebase.CustomObject;
+import io.doublegsoft.typebase.EnumValue;
 import io.doublegsoft.typebase.Typebase;
-import java.io.File;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * {@link Tatabase} is an api for the test data.
@@ -47,7 +46,17 @@ public class Tatabase {
   public static final Typebase TYPEBASE = new Typebase();
   
   public static final TatabaseBuilder BUILDER = new TatabaseBuilder();
-  
+
+  private final String dataPath;
+
+  public Tatabase() {
+    dataPath = null;
+  }
+
+  public Tatabase(String dataPath) {
+    this.dataPath = dataPath;
+  }
+
   /**
    * @since 4.0
    */
@@ -163,6 +172,60 @@ public class Tatabase {
     return new NamedEntityAnything().get(dataDir, attrname);
   }
 
+  public String value(AttributeDefinition attr) throws IOException {
+    try {
+      if (!Strings.isEmpty(dataPath)) {
+        String attrname = toCamelCase(attr.getName());
+        return new NamedEntityAnything().get(dataPath, attrname);
+      }
+    } catch (Throwable cause) {
+
+    }
+    if (attr.isIdentifiable() && Strings.in(attr.getType().getName(), "uuid", "string")) {
+      return UUID.randomUUID().toString();
+    } if (attr.isIdentifiable() && Strings.in(attr.getType().getName(), "long")) {
+      String num = number(1, 100);
+      return num.substring(0, num.indexOf("."));
+    } else if (Strings.in(attr.getType().getName(),"now", "lmt") ||
+        "now".equals(attr.getConstraint().getDefaultValue())) {
+      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    } else if (attr.getConstraint().getDomainType() != null &&
+        attr.getConstraint().getDomainType().getName().startsWith("enum")) {
+      List<EnumValue> enums = new Typebase().enumtype(attr.getConstraint().getDomainType().getName());
+      int index = ThreadLocalRandom.current().nextInt(0, enums.size());
+      return enums.get(index).getCode();
+    } else if (Strings.in(attr.getType().getName(), "int", "integer", "long")) {
+      String num = number(0, 10000);
+      return num.substring(0, num.indexOf("."));
+    } else if (Strings.in(attr.getType().getName(), "number")) {
+      String num = number(0, 10000);
+      return num.substring(0, num.length() - 2);
+    } else if (attr.isLabelled("reference")) {
+      if ("id".equals(attr.getLabelledOption("reference", "value"))) {
+        String num = number(1, 100);
+        return num.substring(0, num.indexOf("."));
+      } else {
+        String[] strs = new String[]{"A.A", "B.B", "C.C", "D.D"};
+        int index = ThreadLocalRandom.current().nextInt(0, strs.length);
+        return strs[index];
+      }
+    } else if (attr.getName().contains("phone")) {
+      return new NamedEntityPhone().get(1).get(0);
+    } else if (attr.getName().contains("mobile")) {
+      return new NamedEntityMobile().get(1).get(0);
+    } else if (attr.getName().contains("address")) {
+      return new NamedEntityAddress().get(1).get(0);
+    }
+    int size = attr.getConstraint().getMaxSize();
+    if (size == 0) {
+      size = 10;
+    }
+    if (size > 20) {
+      size = 20;
+    }
+    return string(size);
+  }
+
   @Deprecated
   public String value(String domain, String prefix, String langtype) {
     String dmn = domain == null ? "" : domain.toLowerCase();
@@ -225,5 +288,27 @@ public class Tatabase {
     return retVal.get(0);
   }
 
+  public static String toCamelCase(String input) {
+    if (input == null || input.isEmpty()) {
+      return input;
+    }
 
+    StringBuilder result = new StringBuilder();
+    boolean capitalizeNext = false;
+
+    for (char c : input.toCharArray()) {
+      if (c == '_' || c == '-' || c == ' ') {
+        capitalizeNext = true;
+      } else {
+        if (capitalizeNext) {
+          result.append(Character.toUpperCase(c));
+          capitalizeNext = false;
+        } else {
+          result.append(Character.toLowerCase(c));
+        }
+      }
+    }
+
+    return result.toString();
+  }
 }
