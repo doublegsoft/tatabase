@@ -19,7 +19,10 @@
 package io.doublegsoft.tatabase;
 
 import com.doublegsoft.jcommons.metabean.AttributeDefinition;
+import com.doublegsoft.jcommons.metabean.ModelDefinition;
+import com.doublegsoft.jcommons.metabean.ObjectDefinition;
 import com.doublegsoft.jcommons.metabean.type.DomainType;
+import com.doublegsoft.jcommons.metabean.type.PrimitiveType;
 import com.doublegsoft.jcommons.utils.Strings;
 import io.doublegsoft.tatabase.ne.*;
 import io.doublegsoft.tatabase.random.RandomNumber;
@@ -44,6 +47,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Tatabase {
   
   public static final Typebase TYPEBASE = new Typebase();
+
+  public static final ModelDefinition DUMMY = new ModelDefinition();
+
+  public static final ObjectDefinition OBJ = new ObjectDefinition("dummy", DUMMY);
   
   public static final TatabaseBuilder BUILDER = new TatabaseBuilder();
 
@@ -158,14 +165,22 @@ public class Tatabase {
     return value(domainType.getName(), null, langtype);
   }
 
-  public String value(String domain) {
-    List<String> strs = new ArrayList<>();
-    for(Scanner sc = new Scanner(getClass().getResourceAsStream("/ne/" + domain), "UTF-8"); sc.hasNext();) {
-      String line = sc.nextLine();
-      strs.add(line);
+  public String value(String domain) throws IOException {
+    try {
+      List<String> strs = new ArrayList<>();
+      for (Scanner sc = new Scanner(getClass().getResourceAsStream("/ne/" + domain), "UTF-8"); sc.hasNext(); ) {
+        String line = sc.nextLine();
+        strs.add(line);
+      }
+      Random rand = new Random();
+      return strs.get(rand.nextInt(strs.size()));
+    } catch (Throwable cause) {
+
     }
-    Random rand = new Random();
-    return strs.get(rand.nextInt(strs.size()));
+    AttributeDefinition attr = new AttributeDefinition(domain, OBJ);
+    attr.setType(new PrimitiveType("string"));
+    attr.getConstraint().setMaxSize(10);
+    return value(attr);
   }
 
   public String value(String dataDir, String attrname) throws IOException {
