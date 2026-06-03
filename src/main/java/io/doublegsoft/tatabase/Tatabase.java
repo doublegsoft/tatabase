@@ -23,8 +23,10 @@ import com.doublegsoft.jcommons.metabean.ModelDefinition;
 import com.doublegsoft.jcommons.metabean.ObjectDefinition;
 import com.doublegsoft.jcommons.metabean.type.DomainType;
 import com.doublegsoft.jcommons.metabean.type.PrimitiveType;
+import com.doublegsoft.jcommons.metaui.WidgetDefinition;
 import com.doublegsoft.jcommons.utils.Strings;
 import io.doublegsoft.tatabase.ne.*;
+import io.doublegsoft.tatabase.random.RandomDate;
 import io.doublegsoft.tatabase.random.RandomNumber;
 import io.doublegsoft.tatabase.random.RandomUUID;
 import io.doublegsoft.typebase.EnumValue;
@@ -147,44 +149,44 @@ public class Tatabase {
   public String enumcode(String expr) {
     return NamedEntity.ENUM.get(1, expr).get(0);
   }
-  
-  @Deprecated
-  public String value(DomainType domainType, String langtype) {
-    if (domainType.getName().equals("name")) {
-      String type = domainType.getOption("type");
-      if (type == null) {
-        return value("name", null, langtype);
-      }
-      try {
-        DomainObject domObj = new DomainObject(type, "name");
-        return domObj.domain(1).get(0);
-      } catch (Exception ex) {
-        return value("name", null, langtype);
-      }
-    }
-    return value(domainType.getName(), null, langtype);
-  }
 
   public String value(String domain) throws IOException {
-    try {
-      List<String> strs = new ArrayList<>();
-      for (Scanner sc = new Scanner(getClass().getResourceAsStream("/ne/" + domain), "UTF-8"); sc.hasNext(); ) {
-        String line = sc.nextLine();
-        strs.add(line);
-      }
-      Random rand = new Random();
-      return strs.get(rand.nextInt(strs.size()));
-    } catch (Throwable cause) {
-
+    List<String> strs = new ArrayList<>();
+    for (Scanner sc = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream(
+        "/ne/" + toCamelCase(domain))), "UTF-8"); sc.hasNext(); ) {
+      String line = sc.nextLine();
+      strs.add(line);
     }
-    AttributeDefinition attr = new AttributeDefinition(domain, OBJ);
-    attr.setType(new PrimitiveType("string"));
-    attr.getConstraint().setMaxSize(10);
-    return value(attr);
+    Random rand = new Random();
+    return strs.get(rand.nextInt(strs.size()));
   }
 
-  public String value(String dataDir, String attrname) throws IOException {
-    return new NamedEntityAnything().get(dataDir, attrname);
+  public String value(WidgetDefinition widget) throws IOException {
+    String type = widget.getType();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    switch (type) {
+      case "date":
+        if (widget.getId() != null) {
+          if (widget.getId().contains("birth")) {
+            return sdf.format(new RandomDate("1960-01-01", "2024-12-31").random(0).get(0));
+          }
+        }
+        return sdf.format(new RandomDate("2025-01-01", "2026-12-31").random(0).get(0));
+      case "time":
+        return new SimpleDateFormat("HH:mm").format(new Date());
+      case "number":
+        return String.valueOf(new RandomNumber(1, 1000, 0).random(1).get(0).intValue());
+      case "longtext":
+        return string(50);
+      default:
+        String dataexpr = widget.value("data");
+        if (dataexpr != null && dataexpr.startsWith("enum[")) {
+          List<EnumValue> enums = new Typebase().enumtype(dataexpr);
+          int index = ThreadLocalRandom.current().nextInt(0, enums.size());
+          return enums.get(index).getCode();
+        }
+    }
+    return string(10);
   }
 
   public String value(AttributeDefinition attr) throws IOException {
@@ -193,7 +195,7 @@ public class Tatabase {
         String attrname = toCamelCase(attr.getName());
         return new NamedEntityAnything().get(dataPath, attrname);
       }
-    } catch (Throwable cause) {
+    } catch (Throwable ignored) {
 
     }
     if (attr.isIdentifiable() && Strings.in(attr.getType().getName(), "uuid", "string")) {
@@ -241,48 +243,6 @@ public class Tatabase {
     return string(size);
   }
 
-  @Deprecated
-  public String value(String domain, String prefix, String langtype) {
-    String dmn = domain == null ? "" : domain.toLowerCase();
-    int count = 100;
-    int randomIndex = new Random().nextInt(count - 1);
-    switch (dmn) {
-      case "date":
-        return new NamedEntityDate().get(count, null).get(randomIndex);
-      case "name":
-        if (Strings.isBlank(prefix)) {
-          prefix = "测试名称";
-        }
-        return new NamedEntitySequence().get(count, prefix).get(randomIndex);
-      case "mobile":
-        return new NamedEntityMobile().get(count).get(randomIndex);
-      case "email":
-        return new NamedEntityMail().get(count).get(randomIndex);
-      case "phone":
-        return new NamedEntityPhone().get(count).get(randomIndex);
-      case "money":
-        return new RandomNumber(0, 100, 2).random(count).get(randomIndex).toPlainString();
-      case "number":
-        return new RandomNumber(0, 100, 0).random(count).get(randomIndex).toPlainString();
-      case "int":
-        return new RandomNumber(0, 100, 0).random(count).get(randomIndex).toPlainString();
-      case "uuid":
-        return new RandomUUID().random(count).get(randomIndex);
-      case "format":
-        
-      case "datetime":
-      case "lmt":
-      case "now":
-        return new java.sql.Timestamp(System.currentTimeMillis()).toString();
-    }
-    if (dmn.startsWith("'") && dmn.endsWith("'")) {
-      dmn = dmn.substring(1, dmn.length() - 1).toUpperCase();
-      BigDecimal intVal = new RandomNumber(0, 100, 0).random(count).get(randomIndex);
-      return dmn + String.format("%03d", intVal.intValue());
-    }
-    return "null";
-  }
-  
   /**
    * Gets a string value randomly.
    * 

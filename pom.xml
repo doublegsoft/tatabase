@@ -92,6 +92,11 @@
       <version>7.0</version>
     </dependency>
     <dependency>
+      <groupId>com.doublegsoft.jcommons</groupId>
+      <artifactId>jcommons-metaui</artifactId>
+      <version>7.0</version>
+    </dependency>
+    <dependency>
       <groupId>io.doublegsoft.typebase</groupId>
       <artifactId>typebase</artifactId>
       <version>7.0</version>
