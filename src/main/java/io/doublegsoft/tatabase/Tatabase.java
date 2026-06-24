@@ -137,6 +137,10 @@ public class Tatabase {
   public String number(Number min, Number max) {
     return NamedEntity.NUMBER.get(1, min, max).get(0);
   }
+
+  public String number(Number min, Number max, int scale) {
+    return NamedEntity.NUMBER.get(1, min, max, scale).get(0);
+  }
   
   public String date() {
     return NamedEntity.DATE.get(1, null).get(0);

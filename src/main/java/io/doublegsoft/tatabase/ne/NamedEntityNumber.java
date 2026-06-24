@@ -33,11 +33,15 @@ import java.util.Random;
 public class NamedEntityNumber {
   
   public List<String> get(int count, Number min, Number max) {
+    return get(count, min, max, 4);
+  }
+
+  public List<String> get(int count, Number min, Number max, int scale) {
     List<String> retVal = new ArrayList<>();
     Random rand = new Random();
     for (int i = 0; i < count; i++) {
       double dbl = rand.doubles(min.doubleValue(), max.doubleValue()).findFirst().getAsDouble();
-      retVal.add(new BigDecimal(dbl).setScale(4, RoundingMode.HALF_UP).toPlainString());
+      retVal.add(new BigDecimal(dbl).setScale(scale, RoundingMode.HALF_UP).toPlainString());
     }
     return retVal;
   }
