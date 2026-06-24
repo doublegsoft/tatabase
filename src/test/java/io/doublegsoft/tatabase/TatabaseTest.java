@@ -83,6 +83,9 @@ public class TatabaseTest {
     attr.setType(new PrimitiveType("long"));
     attr.getConstraint().setIdentifiable(true);
     System.out.println(tb.value(attr));
+
+    System.out.println(tb.image());
+    System.out.println(tb.avatar());
   }
   
 }

@@ -38,7 +38,9 @@ import java.util.Scanner;
 public class NamedEntity {
   
   private static final Map<String, List<String>> cache = new HashMap<>();
-  
+
+  public static final NamedEntity SELF = new NamedEntity();
+
   public static final NamedEntityAddress ADDRESS = new NamedEntityAddress();
   
   public static final NamedEntityDate DATE = new NamedEntityDate();
@@ -124,7 +126,11 @@ public class NamedEntity {
       case "format":
         return FORMAT.get((String) param, count);
       default:
-        return Collections.emptyList();
+        try {
+          return SELF.get(count, namedEntity);
+        } catch (Throwable ignore) {
+          return Collections.emptyList();
+        }
     }
   }
   
