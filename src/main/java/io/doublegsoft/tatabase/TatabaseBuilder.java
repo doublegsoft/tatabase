@@ -84,11 +84,11 @@ public class TatabaseBuilder {
   }
 
   public TatabaseBuilder parse(String dsl) throws IOException {
-    TatabaseLexer lexer = new TatabaseLexer(CharStreams.fromString(dsl));
+    io.doublegsoft.tatabase.TatabaseLexer lexer = new io.doublegsoft.tatabase.TatabaseLexer(CharStreams.fromString(dsl));
     CommonTokenStream tokens = new CommonTokenStream(lexer);
-    TatabaseParser parser = new TatabaseParser(tokens);
+    io.doublegsoft.tatabase.TatabaseParser parser = new io.doublegsoft.tatabase.TatabaseParser(tokens);
     // parser.setErrorHandler(new BailErrorStrategy());
-    TatabaseParser.Tatabase_modelContext ctxModel = parser.tatabase_model();
+    io.doublegsoft.tatabase.TatabaseParser.Tatabase_modelContext ctxModel = parser.tatabase_model();
 
     ctxModel.tatabase_object().stream().forEach((ctxObj) -> {
       model.add("objs", parseObject(ctxObj));

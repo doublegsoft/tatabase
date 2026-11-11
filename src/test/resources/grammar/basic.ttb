@@ -1,0 +1,10 @@
+
+[TEST_0001] '一号测试' {
+
++ { user: id = 1, name = '用户' } = user
+
+> { user }
+
+= { user: id = 1, name = '用户' }
+
+}
