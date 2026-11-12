@@ -14,7 +14,7 @@ public class TestBase {
     io.doublegsoft.tatabase.TatabaseLexer lexer = new io.doublegsoft.tatabase.TatabaseLexer(CharStreams.fromString(dsl));
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     io.doublegsoft.tatabase.TatabaseParser parser = new io.doublegsoft.tatabase.TatabaseParser(tokens);
-     parser.setErrorHandler(new BailErrorStrategy());
+    parser.setErrorHandler(new BailErrorStrategy());
     return parser.tatabase_cases();
   }
 

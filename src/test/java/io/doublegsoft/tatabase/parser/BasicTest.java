@@ -24,6 +24,7 @@ public class BasicTest extends TestBase {
     Assert.assertEquals("一号测试，这里可以来一段测试描述", testcase.getLabel());
     Assert.assertEquals(1, testcase.getPrerequisite().size());
     Assert.assertEquals(1, testcase.getOutput().size());
+    Assert.assertEquals(1, testcase.getVariables().size());
 
     ObjectValueDefinition objVal = testcase.getPrerequisite().get(0);
     Assert.assertEquals(2, objVal.getAttributeValues().size());
@@ -37,7 +38,7 @@ public class BasicTest extends TestBase {
     Assert.assertEquals("TEST_0002", testcase.getCode());
     Assert.assertEquals("二号测试，这里可以来一段测试描述", testcase.getLabel());
     Assert.assertEquals(1, testcase.getPrerequisite().size());
-    Assert.assertEquals(1, testcase.getOutput().size());
+    Assert.assertEquals(2, testcase.getOutput().size());
 
     objVal = testcase.getPrerequisite().get(0);
     Assert.assertEquals(2, objVal.getAttributeValues().size());
@@ -46,6 +47,8 @@ public class BasicTest extends TestBase {
     objVal = testcase.getOutput().get(0);
     Assert.assertEquals(2, objVal.getAttributeValues().size());
     Assert.assertEquals("account", objVal.getName());
+    Assert.assertEquals("id", objVal.getSearch().getName());
+    Assert.assertEquals("user.id", objVal.getSearch().getValue().toString());
   }
 
 }

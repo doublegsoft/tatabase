@@ -98,6 +98,10 @@ public class TatabaseBuilder {
           attrVal.setValue(parseValue(ctxAttrSet.value));
           objVal.getAttributeValues().add(attrVal);
         }
+        if (ctxPre.tatabase_case_assign() != null) {
+          String varName = ctxPre.tatabase_case_assign().anybase_id().getText();
+          testcase.getVariables().put(varName, objVal);
+        }
         testcase.getPrerequisite().add(objVal);
       }
       for (io.doublegsoft.tatabase.TatabaseParser.Tatabase_case_outputContext ctxOutput : ctxCase.tatabase_case_output()) {
@@ -109,6 +113,12 @@ public class TatabaseBuilder {
           attrVal.setName(ctxAttrAssert.name.getText());
           attrVal.setValue(parseValue(ctxAttrAssert.value));
           objVal.getAttributeValues().add(attrVal);
+        }
+        if (ctxObjAssert.attr != null) {
+          AttributeValueDefinition attrVal = new AttributeValueDefinition();
+          attrVal.setName(ctxObjAssert.attr.getText());
+          attrVal.setValue(parseValue(ctxObjAssert.tatabase_value()));
+          objVal.setSearch(attrVal);
         }
         testcase.getOutput().add(objVal);
       }
@@ -343,7 +353,7 @@ public class TatabaseBuilder {
 
   private static Object parseValue(io.doublegsoft.tatabase.TatabaseParser.Tatabase_valueContext ctxVal) {
     if (ctxVal.var != null) {
-      return "$" + ctxVal.var.getText();
+      return ctxVal.var.getText();
     } else if (ctxVal.num != null) {
       if (ctxVal.num.anybase_int().size() == 1) {
         String val = ctxVal.num.anybase_int(0).getText();

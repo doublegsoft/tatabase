@@ -20,6 +20,7 @@
 
 > { account }
 
+= { account: id = 1, account = '用户' } # (id = user.id)
 = { account: id = 1, account = '用户' } # (id = 1)
 
 }
