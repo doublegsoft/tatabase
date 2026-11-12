@@ -1,5 +1,6 @@
 package io.doublegsoft.tatabase;
 
+import com.doublegsoft.jcommons.lang.Option;
 import com.doublegsoft.jcommons.metavalue.ObjectValueDefinition;
 
 import java.util.ArrayList;
@@ -13,7 +14,11 @@ public class TestCase {
 
   private String label;
 
+  private int sequence;
+
   private String description;
+
+  private final Map<String, List<Option>> labelledOptions = new HashMap<>();
 
   private final List<ObjectValueDefinition> prerequisite = new ArrayList<>();
 
@@ -69,5 +74,21 @@ public class TestCase {
 
   public ObjectValueDefinition getVariable(String name) {
     return variables.get(name);
+  }
+
+  public int getSequence() {
+    return sequence;
+  }
+
+  public void setSequence(int sequence) {
+    this.sequence = sequence;
+  }
+
+  public boolean isLabelled(String label) {
+    return labelledOptions.containsKey(label);
+  }
+
+  public void addLabel(String label) {
+    labelledOptions.put(label, new ArrayList<>());
   }
 }

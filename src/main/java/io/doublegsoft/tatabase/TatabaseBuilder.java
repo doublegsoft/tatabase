@@ -78,6 +78,14 @@ public class TatabaseBuilder {
       testcase.setCode(ctxCase.code.getText());
       String label = ctxCase.label.getText();
       testcase.setLabel(label.substring(1, label.length() - 1));
+      if (ctxCase.tatabase_labels() != null) {
+        for (io.doublegsoft.tatabase.TatabaseParser.Tatabase_labelContext ctxLabel : ctxCase.tatabase_labels().tatabase_label()) {
+          testcase.addLabel(ctxLabel.name.getText());
+        }
+      }
+      if (ctxCase.seq != null) {
+        testcase.setSequence(Safe.safeInteger(ctxCase.seq.getText()));
+      }
       if (ctxCase.anybase_string() != null) {
         StringBuilder descr = new StringBuilder();
         for (io.doublegsoft.tatabase.TatabaseParser.Anybase_stringContext ctxStr : ctxCase.anybase_string()) {

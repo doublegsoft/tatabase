@@ -22,6 +22,7 @@ public class BasicTest extends TestBase {
     TestCase testcase = cases.get(0);
     Assert.assertEquals("TEST_0001", testcase.getCode());
     Assert.assertEquals("一号测试，这里可以来一段测试描述", testcase.getLabel());
+    Assert.assertEquals(1, testcase.getSequence());
     Assert.assertEquals(1, testcase.getPrerequisite().size());
     Assert.assertEquals(1, testcase.getOutput().size());
     Assert.assertEquals(1, testcase.getVariables().size());
@@ -37,6 +38,7 @@ public class BasicTest extends TestBase {
     testcase = cases.get(1);
     Assert.assertEquals("TEST_0002", testcase.getCode());
     Assert.assertEquals("二号测试，这里可以来一段测试描述", testcase.getLabel());
+    Assert.assertEquals(2, testcase.getSequence());
     Assert.assertEquals(1, testcase.getPrerequisite().size());
     Assert.assertEquals(2, testcase.getOutput().size());
 
