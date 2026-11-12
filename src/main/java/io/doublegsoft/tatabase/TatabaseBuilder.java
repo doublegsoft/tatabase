@@ -22,6 +22,9 @@ import com.doublegsoft.jcommons.lang.HashObject;
 import com.doublegsoft.jcommons.metabean.AttributeDefinition;
 import com.doublegsoft.jcommons.metabean.ModelDefinition;
 import com.doublegsoft.jcommons.metabean.ObjectDefinition;
+import com.doublegsoft.jcommons.metavalue.AttributeValueDefinition;
+import com.doublegsoft.jcommons.metavalue.ObjectValueDefinition;
+import com.doublegsoft.jcommons.utils.Safe;
 import io.doublegsoft.tatabase.TatabaseParser.Tatabase_attributeContext;
 import io.doublegsoft.tatabase.TatabaseParser.Tatabase_objectContext;
 import io.doublegsoft.tatabase.TatabaseParser.Tatabase_typeContext;
@@ -39,7 +42,10 @@ import io.doublegsoft.tatabase.random.RandomEnumeration;
 import io.doublegsoft.tatabase.random.RandomNumber;
 import io.doublegsoft.tatabase.random.RandomReference;
 import io.doublegsoft.tatabase.random.RandomUUID;
+
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -48,6 +54,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
@@ -61,7 +69,54 @@ import org.antlr.v4.runtime.CommonTokenStream;
 public class TatabaseBuilder {
 
   private final static HashObject model = new HashObject();
-  
+
+  public List<TestCase> build(String dsl) {
+    List<TestCase> retVal = new ArrayList<>();
+    io.doublegsoft.tatabase.TatabaseParser.Tatabase_casesContext ctxCases = parseCases(dsl);
+    for (io.doublegsoft.tatabase.TatabaseParser.Tatabase_caseContext ctxCase : ctxCases.tatabase_case()) {
+      TestCase testcase = new TestCase();
+      testcase.setCode(ctxCase.code.getText());
+      String label = ctxCase.label.getText();
+      testcase.setLabel(label.substring(1, label.length() - 1));
+      if (ctxCase.anybase_string() != null) {
+        StringBuilder descr = new StringBuilder();
+        for (io.doublegsoft.tatabase.TatabaseParser.Anybase_stringContext ctxStr : ctxCase.anybase_string()) {
+          if (descr.length() > 0) {
+            descr.append("\n");
+          }
+          String str = ctxStr.getText();
+          descr.append(str.substring(1, str.length() - 1));
+        }
+      }
+      for (io.doublegsoft.tatabase.TatabaseParser.Tatabase_case_prerequisiteContext ctxPre : ctxCase.tatabase_case_prerequisite()) {
+        ObjectValueDefinition objVal = new ObjectValueDefinition();
+        io.doublegsoft.tatabase.TatabaseParser.Tatabase_case_obj_setContext ctxObjSet = ctxPre.tatabase_case_obj_set();
+        objVal.setName(ctxObjSet.name.getText());
+        for (io.doublegsoft.tatabase.TatabaseParser.Tatabase_case_attr_setContext ctxAttrSet : ctxObjSet.tatabase_case_attrs_set().tatabase_case_attr_set()) {
+          AttributeValueDefinition attrVal = new AttributeValueDefinition();
+          attrVal.setName(ctxAttrSet.name.getText());
+          attrVal.setValue(parseValue(ctxAttrSet.value));
+          objVal.getAttributeValues().add(attrVal);
+        }
+        testcase.getPrerequisite().add(objVal);
+      }
+      for (io.doublegsoft.tatabase.TatabaseParser.Tatabase_case_outputContext ctxOutput : ctxCase.tatabase_case_output()) {
+        ObjectValueDefinition objVal = new ObjectValueDefinition();
+        io.doublegsoft.tatabase.TatabaseParser.Tatabase_case_obj_assertContext ctxObjAssert = ctxOutput.tatabase_case_obj_assert();
+        objVal.setName(ctxObjAssert.name.getText());
+        for (io.doublegsoft.tatabase.TatabaseParser.Tatabase_case_attr_assertContext ctxAttrAssert : ctxObjAssert.tatabase_case_attrs_assert().tatabase_case_attr_assert()) {
+          AttributeValueDefinition attrVal = new AttributeValueDefinition();
+          attrVal.setName(ctxAttrAssert.name.getText());
+          attrVal.setValue(parseValue(ctxAttrAssert.value));
+          objVal.getAttributeValues().add(attrVal);
+        }
+        testcase.getOutput().add(objVal);
+      }
+      retVal.add(testcase);
+    }
+    return retVal;
+  }
+
   /**
    * Gets all test insert SQL statements for the given model.
    * 
@@ -72,6 +127,8 @@ public class TatabaseBuilder {
    *        the SQL statements
    * 
    * @since 3.0
+   *
+   * @deprecated
    */
   public String sqlize(ModelDefinition model) {
     Map<ObjectDefinition, ObjectDefinitionHolder> holders = new HashMap();
@@ -99,6 +156,14 @@ public class TatabaseBuilder {
 
   public HashObject build(Format format) {
     return format.to(model);
+  }
+
+  public io.doublegsoft.tatabase.TatabaseParser.Tatabase_casesContext parseCases(String dsl) {
+    io.doublegsoft.tatabase.TatabaseLexer lexer = new io.doublegsoft.tatabase.TatabaseLexer(CharStreams.fromString(dsl));
+    CommonTokenStream tokens = new CommonTokenStream(lexer);
+    io.doublegsoft.tatabase.TatabaseParser parser = new io.doublegsoft.tatabase.TatabaseParser(tokens);
+    parser.setErrorHandler(new BailErrorStrategy());
+    return parser.tatabase_cases();
   }
 
   private HashObject parseObject(Tatabase_objectContext ctxObj) {
@@ -272,6 +337,29 @@ public class TatabaseBuilder {
           return attr.get("values");
         }
       }
+    }
+    return null;
+  }
+
+  private static Object parseValue(io.doublegsoft.tatabase.TatabaseParser.Tatabase_valueContext ctxVal) {
+    if (ctxVal.var != null) {
+      return "$" + ctxVal.var.getText();
+    } else if (ctxVal.num != null) {
+      if (ctxVal.num.anybase_int().size() == 1) {
+        String val = ctxVal.num.anybase_int(0).getText();
+        return Safe.safeInteger(val);
+      } else {
+        String val = ctxVal.num.anybase_int(0).getText() + "." +
+            ctxVal.num.anybase_int(1).getText();
+        return Safe.safeBigDecimal(val);
+      }
+    } else if (ctxVal.str != null) {
+      String val = ctxVal.str.getText();
+      val = val.substring(1, val.length() - 1);
+      return val;
+    } else if (ctxVal.date != null) {
+      String val = ctxVal.date.getText();
+      return Safe.safeDate(val);
     }
     return null;
   }

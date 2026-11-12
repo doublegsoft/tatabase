@@ -10,11 +10,14 @@
 }
 
 [TEST_0002] '二号测试，这里可以来一段测试描述' {
+  '第一行说明文字'
+  '第二行说明文字'
+  '第三行说明文字'
 
 + { account: id = 1, account = '用户' } = user
 
 > { account }
 
-= { account: id = 1, account = '用户' } # (account_id = 1)
+= { account: id = 1, account = '用户' } # (id = 1)
 
 }

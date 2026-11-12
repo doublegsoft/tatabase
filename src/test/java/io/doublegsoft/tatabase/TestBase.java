@@ -10,7 +10,7 @@ import java.nio.file.Files;
 public class TestBase {
 
   public io.doublegsoft.tatabase.TatabaseParser.Tatabase_casesContext parseCases(String path) throws Exception {
-    String dsl = new String(Files.readAllBytes(new File("./src/test/resources/" + path).toPath()), "utf-8");
+    String dsl = loadText(path);
     io.doublegsoft.tatabase.TatabaseLexer lexer = new io.doublegsoft.tatabase.TatabaseLexer(CharStreams.fromString(dsl));
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     io.doublegsoft.tatabase.TatabaseParser parser = new io.doublegsoft.tatabase.TatabaseParser(tokens);
@@ -18,5 +18,8 @@ public class TestBase {
     return parser.tatabase_cases();
   }
 
+  public String loadText(String path) throws Exception {
+    return new String(Files.readAllBytes(new File("./src/test/resources/" + path).toPath()), "utf-8");
+  }
 
 }
