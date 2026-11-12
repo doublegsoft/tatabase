@@ -5,6 +5,7 @@
 
 > { user }
 
+// this is comment
 = { user: id = 1, name = '用户' }
 
 }
@@ -14,6 +15,7 @@
   '第二行说明文字'
   '第三行说明文字'
 
+// this is comment
 + { account: id = 1, account = '用户' } = user
 
 > { account }
