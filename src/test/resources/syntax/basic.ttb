@@ -2,7 +2,7 @@
 @desktop
 [TEST_0001]#0001 '一号测试，这里可以来一段测试描述' {
 
-+ { user: id = 1, name = '用户' } = user
++ { user: id = 1, name = '用户', } = user
 
 > { user }
 
@@ -23,6 +23,6 @@
 > { account }
 
 = { account: id = 1, account = '用户' } # (id = user.id)
-= { account: id = 1, account = '用户' } # (id = 1)
+= { account: id = 1, account = '用户', } # (id = 1)
 
 }
